@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - EF Smart Kids</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        /* ซ่อน Scrollbar แต่ยังเลื่อนได้ */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 h-screen flex justify-center">
+
+    <div class="w-full max-w-md bg-gray-50 h-full relative shadow-2xl overflow-hidden flex flex-col">
+        
+        <header class="bg-white border-b border-gray-200 p-4 flex items-center shadow-sm z-10">
+            <a href="index.html" class="text-gray-500 hover:text-indigo-600 transition p-2">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </a>
+            <div class="flex items-center ml-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center text-lg shadow-md">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="ml-3">
+                    <h1 class="text-md font-semibold text-gray-800 leading-tight">Children's stories</h1>
+                    <p class="text-[11px] text-green-500 font-medium"><i class="fas fa-circle text-[8px] mr-1"></i>ออนไลน์</p>
+                </div>
+            </div>
+        </header>
+
+        <main id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F3F4F6] pb-2">
+            
+            <div class="flex justify-center">
+                <span class="text-xs text-gray-400 bg-gray-200 px-3 py-1 rounded-full">วันนี้</span>
+            </div>
+
+            <div class="flex items-end">
+                <div class="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm shadow-sm flex-shrink-0">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="ml-2 bg-white text-gray-800 text-sm py-3 px-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] border border-gray-100">
+                    สวัสดีครับคุณแม่! ผมคือ Agent AI <b>"Children's stories"</b> 🤖<br><br>
+                    วันนี้มีอะไรให้ผมช่วยแนะนำเกี่ยวกับการส่งเสริม EF ให้ลูกน้อยวัย 0-5 ปีไหมครับ? สามารถพิมพ์ถาม หรือเลือกจากเมนูด้านล่างได้เลยครับ
+                </div>
+            </div>
+
+        </main>
+
+        <div class="bg-white px-3 py-2 border-t border-gray-100 flex space-x-2 overflow-x-auto no-scrollbar">
+            <button onclick="sendQuickReply('แนะนำเมนูอาหาร (กิน) 🍎')" class="flex-shrink-0 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-xs font-medium border border-orange-200 hover:bg-orange-200 transition">
+                🍎 กิน
+            </button>
+            <button onclick="sendQuickReply('วิธีสร้างสายสัมพันธ์ (กอด) ❤️')" class="flex-shrink-0 bg-pink-100 text-pink-700 px-4 py-1.5 rounded-full text-xs font-medium border border-pink-200 hover:bg-pink-200 transition">
+                ❤️ กอด
+            </button>
+            <button onclick="sendQuickReply('กิจกรรมเสริม EF (เล่น) 🧩')" class="flex-shrink-0 bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-xs font-medium border border-green-200 hover:bg-green-200 transition">
+                🧩 เล่น
+            </button>
+            <button onclick="sendQuickReply('ขอฟังนิทาน 1 เรื่อง (เล่า) 📚')" class="flex-shrink-0 bg-purple-100 text-purple-700 px-4 py-1.5 rounded-full text-xs font-medium border border-purple-200 hover:bg-purple-200 transition">
+                📚 เล่า
+            </button>
+            <button onclick="sendQuickReply('คัดกรองพัฒนาการ 📝')" class="flex-shrink-0 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-xs font-medium border border-blue-200 hover:bg-blue-200 transition">
+                📝 คัดกรองพัฒนาการ
+            </button>
+        </div>
+
+        <footer class="bg-white p-3 flex items-center gap-2 border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <button class="text-gray-400 hover:text-indigo-600 p-2 transition">
+                <i class="fas fa-plus-circle text-xl"></i>
+            </button>
+            <input type="text" id="user-input" placeholder="พิมพ์ข้อความ..." class="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition border border-transparent">
+            <button onclick="sendMessage()" class="bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-indigo-700 transition shadow-md flex-shrink-0">
+                <i class="fas fa-paper-plane text-sm"></i>
+            </button>
+        </footer>
+        
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+
+        // เมื่อกด Enter ในช่องพิมพ์
+        userInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // ฟังก์ชันรับข้อความจากปุ่ม Quick Reply
+        function sendQuickReply(text) {
+            userInput.value = text;
+            sendMessage();
+        }
+
+        // ฟังก์ชันส่งข้อความ
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (text === "") return;
+
+            // แสดงข้อความของผู้ใช้ (ฝั่งขวา)
+            const userMsg = `
+            <div class="flex items-end justify-end">
+                <div class="mr-2 bg-indigo-600 text-white text-sm py-3 px-4 rounded-2xl rounded-br-none shadow-sm max-w-[80%]">
+                    ${text}
+                </div>
+            </div>`;
+            chatContainer.insertAdjacentHTML('beforeend', userMsg);
+            userInput.value = "";
+            scrollToBottom();
+
+            // จำลอง AI พิมพ์ตอบกลับ (ดีเลย์ 1 วินาที)
+            setTimeout(() => {
+                let botReplyText = "ระบบกำลังประมวลผลคำตอบเพื่อส่งเสริม Executive Function ให้ลูกน้อยของคุณครับ 🌟";
+                
+                // ตรวจจับคำเพื่อตอบกลับจำลอง
+                if(text.includes('เล่า') || text.includes('นิทาน')) {
+                    botReplyText = "ได้เลยครับ! นิทานเรื่อง 'กระต่ายน้อยจอมวางแผน' 🐰\nกระต่ายน้อยตัวหนึ่งอยากกินแครอทฝั่งตรงข้ามแม่น้ำ เขาจึงต้องคิดหาวิธี (ฝึก Working Memory และ Planning)...";
+                } else if(text.includes('คัดกรอง')) {
+                    botReplyText = "ยินดีครับ กรุณากดลิงก์นี้เพื่อเริ่มทำแบบประเมิน DSPM เบื้องต้นครับ 📋";
+                }
+
+                const botMsg = `
+                <div class="flex items-end">
+                    <div class="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm shadow-sm flex-shrink-0">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="ml-2 bg-white text-gray-800 text-sm py-3 px-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] border border-gray-100">
+                        ${botReplyText}
+                    </div>
+                </div>`;
+                chatContainer.insertAdjacentHTML('beforeend', botMsg);
+                scrollToBottom();
+            }, 1000);
+        }
+
+        // ฟังก์ชันเลื่อนจอลงล่างสุด
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
