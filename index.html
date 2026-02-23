@@ -11,8 +11,8 @@
         body { font-family: 'Prompt', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* บังคับซ่อนหน้าจอที่ไม่ได้ใช้งานอย่างเด็ดขาด */
         .hidden-view { display: none !important; }
-        /* Toast Notification */
         #toast { transition: opacity 0.3s, transform 0.3s; }
     </style>
 </head>
@@ -20,13 +20,13 @@
 
     <div class="w-full max-w-md bg-white h-full relative shadow-2xl overflow-hidden flex flex-col">
         
-        <header class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 shadow-md z-10">
+        <header class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 shadow-md z-20">
             <h1 id="header-title" class="text-xl font-bold text-center">ข้อมูลเด็กปฐมวัย</h1>
         </header>
 
-        <main class="flex-1 overflow-y-auto bg-gray-50 pb-20 relative">
+        <main class="flex-1 relative bg-gray-50 overflow-hidden">
 
-            <div id="view-profile" class="p-5 space-y-4">
+            <div id="view-profile" class="h-full overflow-y-auto p-5 pb-24 space-y-4 block">
                 <div class="flex justify-center mb-4">
                     <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center text-4xl text-indigo-400 shadow-inner border-4 border-white">
                         <i class="fas fa-child"></i>
@@ -49,14 +49,14 @@
                                 <input type="text" id="child-age" placeholder="เช่น 3 ปี 2 เดือน" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
                             </div>
                         </div>
-                        <button onclick="saveProfile()" class="w-full bg-indigo-600 text-white font-medium rounded-xl py-2.5 mt-2 hover:bg-indigo-700 transition shadow-md">
+                        <button type="button" onclick="saveProfile()" class="w-full bg-indigo-600 text-white font-medium rounded-xl py-2.5 mt-2 hover:bg-indigo-700 transition shadow-md">
                             บันทึกข้อมูล
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div id="view-assessment" class="hidden-view p-5 space-y-4">
+            <div id="view-assessment" class="hidden-view h-full overflow-y-auto p-5 pb-24 space-y-4">
                 <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl">
                     <h2 class="font-semibold text-blue-800">เครื่องมือคัดกรอง</h2>
                     <p class="text-xs text-blue-600 mt-1">เลือกแบบประเมินตามช่วงวัยและวัตถุประสงค์</p>
@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <div id="view-dashboard" class="hidden-view p-5 space-y-4">
+            <div id="view-dashboard" class="hidden-view h-full overflow-y-auto p-5 pb-24 space-y-4">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                     <h2 id="dash-title" class="text-sm font-semibold text-gray-600 mb-4">ภาพรวมพัฒนาการ EF</h2>
                     
@@ -137,8 +137,8 @@
                 </div>
             </div>
 
-            <div id="view-chat" class="hidden-view flex flex-col h-full absolute inset-0 bg-gray-50">
-                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
+            <div id="view-chat" class="hidden-view h-full flex flex-col pb-[72px]">
+                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4">
                     <div class="flex justify-center">
                         <span class="text-xs text-gray-400 bg-gray-200 px-3 py-1 rounded-full">ระบบอัตโนมัติ</span>
                     </div>
@@ -152,9 +152,9 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-3 flex items-center gap-2 border-t border-gray-200 absolute bottom-0 w-full z-10">
+                <div class="bg-white p-3 flex items-center gap-2 border-t border-gray-200">
                     <input type="text" id="user-input" placeholder="พิมพ์ข้อความ..." class="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                    <button onclick="sendMessage()" class="bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md">
+                    <button type="button" onclick="sendMessage()" class="bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md">
                         <i class="fas fa-paper-plane text-sm"></i>
                     </button>
                 </div>
@@ -162,7 +162,7 @@
 
         </main>
 
-        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-3 pb-5 z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-3 pb-5 z-30 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
             <button onclick="switchTab('profile', 'ข้อมูลเด็กปฐมวัย', this)" class="nav-btn text-indigo-600 flex flex-col items-center w-1/4 transition">
                 <i class="fas fa-user-edit text-xl mb-1"></i>
                 <span class="text-[10px] font-medium mt-1">บันทึกข้อมูล</span>
@@ -181,35 +181,59 @@
             </button>
         </nav>
 
-        <div id="toast" class="absolute top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium opacity-0 pointer-events-none z-50">
+        <div id="toast" class="absolute top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium opacity-0 pointer-events-none z-50">
             บันทึกข้อมูลสำเร็จ!
         </div>
         
     </div>
 
     <script>
-        // === การจัดการ LocalStorage ===
-        
         // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
         window.onload = function() {
             loadProfile();
             updateDashboard();
         };
 
-        // บันทึกข้อมูลเด็ก
+        // ฟังก์ชันสลับหน้าจอ (ซ่อนหน้าอื่นให้หมด แล้วเปิดเฉพาะหน้าที่เลือก)
+        function switchTab(tabId, title, btnElement) {
+            document.getElementById('view-profile').classList.add('hidden-view');
+            document.getElementById('view-assessment').classList.add('hidden-view');
+            document.getElementById('view-dashboard').classList.add('hidden-view');
+            document.getElementById('view-chat').classList.add('hidden-view');
+
+            document.getElementById('view-' + tabId).classList.remove('hidden-view');
+            document.getElementById('header-title').innerText = title;
+
+            // รีเซ็ตสีปุ่ม
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('text-indigo-600');
+                btn.classList.add('text-gray-400');
+            });
+
+            // ไฮไลต์ปุ่มที่ถูกกด
+            btnElement.classList.remove('text-gray-400');
+            btnElement.classList.add('text-indigo-600');
+        }
+
+        // ฟังก์ชันบันทึกข้อมูลเด็ก
         function saveProfile() {
             const name = document.getElementById('child-name').value;
             const dob = document.getElementById('child-dob').value;
             const age = document.getElementById('child-age').value;
             
-            const profile = { name, dob, age };
-            localStorage.setItem('ef_child_profile', JSON.stringify(profile));
+            const profile = { name: name, dob: dob, age: age };
             
-            showToast('บันทึกข้อมูลเรียบร้อยแล้ว');
-            updateDashboard(); // อัปเดตชื่อในแดชบอร์ด
+            try {
+                localStorage.setItem('ef_child_profile', JSON.stringify(profile));
+                showToast('บันทึกข้อมูลเรียบร้อยแล้ว');
+                updateDashboard(); 
+            } catch (e) {
+                alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล: " + e.message);
+            }
         }
 
-        // โหลดข้อมูลเด็กมาแสดงในฟอร์ม
+        // ฟังก์ชันโหลดข้อมูลเด็ก
         function loadProfile() {
             const savedData = localStorage.getItem('ef_child_profile');
             if (savedData) {
@@ -220,9 +244,8 @@
             }
         }
 
-        // จำลองการทำแบบประเมินและสุ่มคะแนน
+        // ฟังก์ชันจำลองการทำแบบประเมิน
         function mockAssessment(type) {
-            // สุ่มคะแนน 40-100
             const scores = {
                 wm: Math.floor(Math.random() * 61) + 40,
                 ic: Math.floor(Math.random() * 61) + 40,
@@ -230,39 +253,37 @@
             };
             localStorage.setItem('ef_scores', JSON.stringify(scores));
             
-            showToast(`ประเมิน ${type} เสร็จสิ้น!`);
+            showToast(`บันทึกผล ${type} เสร็จสิ้น!`);
             updateDashboard();
             
-            // เปลี่ยนไปหน้า Dashboard อัตโนมัติหลังจากประเมินเสร็จ
+            // สลับไปหน้า Dashboard ทันที
             setTimeout(() => {
                 const dashBtn = document.querySelectorAll('.nav-btn')[2];
                 switchTab('dashboard', 'สรุปผลพัฒนาการ', dashBtn);
-            }, 1000);
+            }, 800);
         }
 
-        // อัปเดตแดชบอร์ด
+        // ฟังก์ชันอัปเดต Dashboard
         function updateDashboard() {
-            // อัปเดตชื่อเด็ก
             const savedProfile = JSON.parse(localStorage.getItem('ef_child_profile')) || {};
-            const childName = savedProfile.name ? `ของ ${savedProfile.name}` : '';
+            const childName = savedProfile.name ? `ของน้อง ${savedProfile.name}` : '';
             document.getElementById('dash-title').innerText = `ภาพรวมพัฒนาการ EF ${childName}`;
 
-            // อัปเดตกราฟ
             const savedScores = JSON.parse(localStorage.getItem('ef_scores')) || {wm: 0, ic: 0, cf: 0};
             
-            document.getElementById('bar-wm').style.width = savedScores.wm + '%';
-            document.getElementById('text-wm').innerText = savedScores.wm + '%';
-            
-            document.getElementById('bar-ic').style.width = savedScores.ic + '%';
-            document.getElementById('text-ic').innerText = savedScores.ic + '%';
-            
-            document.getElementById('bar-cf').style.width = savedScores.cf + '%';
-            document.getElementById('text-cf').innerText = savedScores.cf + '%';
+            setTimeout(() => {
+                document.getElementById('bar-wm').style.width = savedScores.wm + '%';
+                document.getElementById('text-wm').innerText = savedScores.wm + '%';
+                
+                document.getElementById('bar-ic').style.width = savedScores.ic + '%';
+                document.getElementById('text-ic').innerText = savedScores.ic + '%';
+                
+                document.getElementById('bar-cf').style.width = savedScores.cf + '%';
+                document.getElementById('text-cf').innerText = savedScores.cf + '%';
+            }, 100);
         }
 
-        // === UI & Interaction ===
-
-        // แสดงแจ้งเตือน (Toast)
+        // แสดง Popup แจ้งเตือน
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -275,27 +296,7 @@
             }, 2500);
         }
 
-        // สลับหน้าจอ
-        function switchTab(tabId, title, btnElement) {
-            document.getElementById('view-profile').classList.add('hidden-view');
-            document.getElementById('view-assessment').classList.add('hidden-view');
-            document.getElementById('view-dashboard').classList.add('hidden-view');
-            document.getElementById('view-chat').classList.add('hidden-view');
-
-            document.getElementById('view-' + tabId).classList.remove('hidden-view');
-            document.getElementById('header-title').innerText = title;
-
-            const navBtns = document.querySelectorAll('.nav-btn');
-            navBtns.forEach(btn => {
-                btn.classList.remove('text-indigo-600');
-                btn.classList.add('text-gray-400');
-            });
-
-            btnElement.classList.remove('text-gray-400');
-            btnElement.classList.add('text-indigo-600');
-        }
-
-        // ระบบ Chat
+        // ระบบแชท
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
 
@@ -325,7 +326,7 @@
                         <i class="fas fa-robot"></i>
                     </div>
                     <div class="ml-2 bg-white text-gray-800 text-sm py-3 px-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] border border-gray-100">
-                        ระบบได้รับข้อมูลเรียบร้อยครับ ระบบจะทำการวิเคราะห์เพื่อแนะนำแนวทางการส่งเสริมต่อไปครับ 📊
+                        รับทราบครับ ระบบจะทำการวิเคราะห์และนำไปปรับใช้ในกิจกรรมต่อไปครับ 📊
                     </div>
                 </div>`;
                 chatContainer.insertAdjacentHTML('beforeend', botMsg);
