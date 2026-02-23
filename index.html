@@ -11,8 +11,9 @@
         body { font-family: 'Prompt', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* คลาสสำหรับซ่อนหน้าจอ */
-        .hidden-view { display: none; }
+        .hidden-view { display: none !important; }
+        /* Toast Notification */
+        #toast { transition: opacity 0.3s, transform 0.3s; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 h-screen flex justify-center">
@@ -35,20 +36,22 @@
                     <h2 class="text-sm font-semibold text-gray-600 mb-3">ลงทะเบียนข้อมูลเด็ก</h2>
                     <div class="space-y-3">
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">ชื่อ-นามสกุล</label>
-                            <input type="text" placeholder="ด.ช. / ด.ญ." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                            <label class="block text-xs text-gray-500 mb-1">ชื่อ-นามสกุล / ชื่อเล่น</label>
+                            <input type="text" id="child-name" placeholder="เช่น ด.ช. ภูมิ" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1">วันเกิด</label>
-                                <input type="date" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 text-gray-600">
+                                <input type="date" id="child-dob" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 text-gray-600">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1">อายุ (ปี/เดือน)</label>
-                                <input type="text" placeholder="เช่น 3 ปี 2 เดือน" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                                <input type="text" id="child-age" placeholder="เช่น 3 ปี 2 เดือน" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 text-white font-medium rounded-xl py-2.5 mt-2 hover:bg-indigo-700 transition shadow-md">บันทึกข้อมูล</button>
+                        <button onclick="saveProfile()" class="w-full bg-indigo-600 text-white font-medium rounded-xl py-2.5 mt-2 hover:bg-indigo-700 transition shadow-md">
+                            บันทึกข้อมูล
+                        </button>
                     </div>
                 </div>
             </div>
@@ -60,27 +63,27 @@
                 </div>
 
                 <div class="space-y-3">
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition">
+                    <div onclick="mockAssessment('DSPM')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between cursor-pointer hover:bg-green-50 transition">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl mr-3">
                                 <i class="fas fa-clipboard-check"></i>
                             </div>
                             <div>
                                 <h3 class="font-medium text-gray-800 text-sm">คัดกรอง DSPM</h3>
-                                <p class="text-xs text-gray-500">ประเมินพัฒนาการ 5 ด้าน</p>
+                                <p class="text-xs text-gray-500">กดเพื่อจำลองการประเมิน</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right text-gray-300"></i>
                     </div>
 
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition">
+                    <div onclick="mockAssessment('BRIEF-P')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between cursor-pointer hover:bg-purple-50 transition">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-xl mr-3">
                                 <i class="fas fa-brain"></i>
                             </div>
                             <div>
                                 <h3 class="font-medium text-gray-800 text-sm">ประเมิน EF (BRIEF-P)</h3>
-                                <p class="text-xs text-gray-500">ทักษะการคิดเชิงบริหารจัดการ</p>
+                                <p class="text-xs text-gray-500">กดเพื่อจำลองผลคะแนน EF</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right text-gray-300"></i>
@@ -90,34 +93,34 @@
 
             <div id="view-dashboard" class="hidden-view p-5 space-y-4">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <h2 class="text-sm font-semibold text-gray-600 mb-4">ภาพรวมพัฒนาการ EF</h2>
+                    <h2 id="dash-title" class="text-sm font-semibold text-gray-600 mb-4">ภาพรวมพัฒนาการ EF</h2>
                     
                     <div class="space-y-4">
                         <div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="font-medium text-gray-700">Working Memory</span>
-                                <span class="text-indigo-600 font-bold">85%</span>
+                                <span id="text-wm" class="text-indigo-600 font-bold">0%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-indigo-500 h-2 rounded-full" style="width: 85%"></div>
+                                <div id="bar-wm" class="bg-indigo-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                         <div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="font-medium text-gray-700">Inhibitory Control</span>
-                                <span class="text-pink-500 font-bold">60%</span>
+                                <span id="text-ic" class="text-pink-500 font-bold">0%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-pink-400 h-2 rounded-full" style="width: 60%"></div>
+                                <div id="bar-ic" class="bg-pink-400 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                         <div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="font-medium text-gray-700">Cognitive Flexibility</span>
-                                <span class="text-orange-500 font-bold">70%</span>
+                                <span id="text-cf" class="text-orange-500 font-bold">0%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-orange-400 h-2 rounded-full" style="width: 70%"></div>
+                                <div id="bar-cf" class="bg-orange-400 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -129,13 +132,13 @@
                         <h3 class="font-semibold text-green-800 text-sm">คำแนะนำจาก AI</h3>
                     </div>
                     <p class="text-xs text-gray-600 leading-relaxed">
-                        พัฒนาการโดยรวมอยู่ในเกณฑ์ <b>"สมวัย"</b> ควรเน้นกิจกรรมที่ส่งเสริมการยับยั้งชั่งใจ (Inhibitory Control) เช่น การเล่นเกม "หยุด-เดิน" หรือการรอคอย
+                        ข้อมูลถูกอัปเดตเรียบร้อย ระบบจะวิเคราะห์กิจกรรมที่เหมาะสมให้อัตโนมัติในเมนู AI Chat ครับ
                     </p>
                 </div>
             </div>
 
-            <div id="view-chat" class="hidden-view flex flex-col h-full">
-                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div id="view-chat" class="hidden-view flex flex-col h-full absolute inset-0 bg-gray-50">
+                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
                     <div class="flex justify-center">
                         <span class="text-xs text-gray-400 bg-gray-200 px-3 py-1 rounded-full">ระบบอัตโนมัติ</span>
                     </div>
@@ -144,12 +147,12 @@
                             <i class="fas fa-robot"></i>
                         </div>
                         <div class="ml-2 bg-white text-gray-800 text-sm py-3 px-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] border border-gray-100">
-                            สวัสดีครับคุณแม่! ผมคือ Agent AI <b>"Children's stories"</b> 🤖<br>วันนี้มีอะไรให้ผมช่วยแนะนำ หรืออยากคัดกรองพัฒนาการน้องพิมพ์บอกได้เลยครับ
+                            สวัสดีครับ! ผมคือ Agent AI <b>"Children's stories"</b> 🤖<br>วันนี้มีอะไรให้ผมช่วยแนะนำการกระตุ้นพัฒนาการไหมครับ?
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-3 flex items-center gap-2 border-t border-gray-200">
+                <div class="bg-white p-3 flex items-center gap-2 border-t border-gray-200 absolute bottom-0 w-full z-10">
                     <input type="text" id="user-input" placeholder="พิมพ์ข้อความ..." class="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                     <button onclick="sendMessage()" class="bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md">
                         <i class="fas fa-paper-plane text-sm"></i>
@@ -162,52 +165,137 @@
         <nav class="absolute bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-3 pb-5 z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
             <button onclick="switchTab('profile', 'ข้อมูลเด็กปฐมวัย', this)" class="nav-btn text-indigo-600 flex flex-col items-center w-1/4 transition">
                 <i class="fas fa-user-edit text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">บันทึกข้อมูล</span>
+                <span class="text-[10px] font-medium mt-1">บันทึกข้อมูล</span>
             </button>
             <button onclick="switchTab('assessment', 'ประเมินพัฒนาการ', this)" class="nav-btn text-gray-400 hover:text-indigo-600 flex flex-col items-center w-1/4 transition">
                 <i class="fas fa-clipboard-list text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">ประเมิน</span>
+                <span class="text-[10px] font-medium mt-1">ประเมิน</span>
             </button>
             <button onclick="switchTab('dashboard', 'สรุปผลพัฒนาการ', this)" class="nav-btn text-gray-400 hover:text-indigo-600 flex flex-col items-center w-1/4 transition">
                 <i class="fas fa-chart-pie text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">แดชบอร์ด</span>
+                <span class="text-[10px] font-medium mt-1">แดชบอร์ด</span>
             </button>
             <button onclick="switchTab('chat', 'คุยกับ AI Agent', this)" class="nav-btn text-gray-400 hover:text-indigo-600 flex flex-col items-center w-1/4 transition">
                 <i class="fas fa-comment-dots text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">AI Chat</span>
+                <span class="text-[10px] font-medium mt-1">AI Chat</span>
             </button>
         </nav>
+
+        <div id="toast" class="absolute top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium opacity-0 pointer-events-none z-50">
+            บันทึกข้อมูลสำเร็จ!
+        </div>
         
     </div>
 
     <script>
-        // ฟังก์ชันสลับหน้าจอ (Tab Switching)
+        // === การจัดการ LocalStorage ===
+        
+        // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
+        window.onload = function() {
+            loadProfile();
+            updateDashboard();
+        };
+
+        // บันทึกข้อมูลเด็ก
+        function saveProfile() {
+            const name = document.getElementById('child-name').value;
+            const dob = document.getElementById('child-dob').value;
+            const age = document.getElementById('child-age').value;
+            
+            const profile = { name, dob, age };
+            localStorage.setItem('ef_child_profile', JSON.stringify(profile));
+            
+            showToast('บันทึกข้อมูลเรียบร้อยแล้ว');
+            updateDashboard(); // อัปเดตชื่อในแดชบอร์ด
+        }
+
+        // โหลดข้อมูลเด็กมาแสดงในฟอร์ม
+        function loadProfile() {
+            const savedData = localStorage.getItem('ef_child_profile');
+            if (savedData) {
+                const profile = JSON.parse(savedData);
+                document.getElementById('child-name').value = profile.name || '';
+                document.getElementById('child-dob').value = profile.dob || '';
+                document.getElementById('child-age').value = profile.age || '';
+            }
+        }
+
+        // จำลองการทำแบบประเมินและสุ่มคะแนน
+        function mockAssessment(type) {
+            // สุ่มคะแนน 40-100
+            const scores = {
+                wm: Math.floor(Math.random() * 61) + 40,
+                ic: Math.floor(Math.random() * 61) + 40,
+                cf: Math.floor(Math.random() * 61) + 40
+            };
+            localStorage.setItem('ef_scores', JSON.stringify(scores));
+            
+            showToast(`ประเมิน ${type} เสร็จสิ้น!`);
+            updateDashboard();
+            
+            // เปลี่ยนไปหน้า Dashboard อัตโนมัติหลังจากประเมินเสร็จ
+            setTimeout(() => {
+                const dashBtn = document.querySelectorAll('.nav-btn')[2];
+                switchTab('dashboard', 'สรุปผลพัฒนาการ', dashBtn);
+            }, 1000);
+        }
+
+        // อัปเดตแดชบอร์ด
+        function updateDashboard() {
+            // อัปเดตชื่อเด็ก
+            const savedProfile = JSON.parse(localStorage.getItem('ef_child_profile')) || {};
+            const childName = savedProfile.name ? `ของ ${savedProfile.name}` : '';
+            document.getElementById('dash-title').innerText = `ภาพรวมพัฒนาการ EF ${childName}`;
+
+            // อัปเดตกราฟ
+            const savedScores = JSON.parse(localStorage.getItem('ef_scores')) || {wm: 0, ic: 0, cf: 0};
+            
+            document.getElementById('bar-wm').style.width = savedScores.wm + '%';
+            document.getElementById('text-wm').innerText = savedScores.wm + '%';
+            
+            document.getElementById('bar-ic').style.width = savedScores.ic + '%';
+            document.getElementById('text-ic').innerText = savedScores.ic + '%';
+            
+            document.getElementById('bar-cf').style.width = savedScores.cf + '%';
+            document.getElementById('text-cf').innerText = savedScores.cf + '%';
+        }
+
+        // === UI & Interaction ===
+
+        // แสดงแจ้งเตือน (Toast)
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2500);
+        }
+
+        // สลับหน้าจอ
         function switchTab(tabId, title, btnElement) {
-            // ซ่อนทุกหน้า
             document.getElementById('view-profile').classList.add('hidden-view');
             document.getElementById('view-assessment').classList.add('hidden-view');
             document.getElementById('view-dashboard').classList.add('hidden-view');
             document.getElementById('view-chat').classList.add('hidden-view');
 
-            // แสดงหน้าที่เลือก
             document.getElementById('view-' + tabId).classList.remove('hidden-view');
-
-            // เปลี่ยนชื่อ Header
             document.getElementById('header-title').innerText = title;
 
-            // รีเซ็ตสีปุ่มเมนูทั้งหมด
             const navBtns = document.querySelectorAll('.nav-btn');
             navBtns.forEach(btn => {
                 btn.classList.remove('text-indigo-600');
                 btn.classList.add('text-gray-400');
             });
 
-            // ไฮไลต์ปุ่มที่ถูกกด
             btnElement.classList.remove('text-gray-400');
             btnElement.classList.add('text-indigo-600');
         }
 
-        // ฟังก์ชันของระบบ AI Chat
+        // ระบบ Chat
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
 
@@ -222,7 +310,6 @@
             const text = userInput.value.trim();
             if (text === "") return;
 
-            // ฝั่งผู้ใช้พิมพ์
             const userMsg = `
             <div class="flex items-end justify-end">
                 <div class="mr-2 bg-indigo-600 text-white text-sm py-3 px-4 rounded-2xl rounded-br-none shadow-sm max-w-[80%]">${text}</div>
@@ -231,7 +318,6 @@
             userInput.value = "";
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // ฝั่ง AI ตอบกลับ
             setTimeout(() => {
                 const botMsg = `
                 <div class="flex items-end mt-4">
@@ -239,7 +325,7 @@
                         <i class="fas fa-robot"></i>
                     </div>
                     <div class="ml-2 bg-white text-gray-800 text-sm py-3 px-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] border border-gray-100">
-                        ระบบได้รับข้อมูลเรียบร้อยครับ ข้อมูลนี้จะถูกบันทึกเพื่อใช้ประเมินร่วมกับแบบประเมินอื่นๆ ต่อไปครับ 📊
+                        ระบบได้รับข้อมูลเรียบร้อยครับ ระบบจะทำการวิเคราะห์เพื่อแนะนำแนวทางการส่งเสริมต่อไปครับ 📊
                     </div>
                 </div>`;
                 chatContainer.insertAdjacentHTML('beforeend', botMsg);
